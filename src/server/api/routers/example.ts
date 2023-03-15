@@ -4,35 +4,29 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "~/server/api/trpc";
-// import 
+import { Configuration, OpenAIApi } from "openai";
 
-// const { Configuration, OpenAIApi } = require("openai");
-
-// const configuration = new Configuration({
-//   apiKey: process.env.OPENAI_API_KEY,
-// });
-// const openai = new OpenAIApi(configuration);
-
-// const completion = await openai.createCompletion({
-//   model: "text-davinci-003",
-//   prompt: "Hello world",
-// });
-// console.log(completion.data.choices[0].text);
+const configuration = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+const openai = new OpenAIApi(configuration);
 
 export const exampleRouter = createTRPCRouter({
   hello: publicProcedure
     .input(z.object({ text: z.string() }))
-    .query(({ input }) => {
+    .mutation(async ({ input }) => {
+
+      const completion = await openai.createCompletion({
+        model: "text-davinci-003",
+        prompt: `Answer the following question as a cute uwu chatbot: ${input.text}`,
+        max_tokens: 100,
+      });
+
       return {
-        greeting: `Hello ${input.text}`,
+        response: completion.data.choices[0]?.text,
       };
+
+
     }),
 
-  getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.example.findMany();
-  }),
-
-  getSecretMessage: protectedProcedure.query(() => {
-    return "you can now see this secret message!";
-  }),
 });

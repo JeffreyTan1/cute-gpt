@@ -4,9 +4,11 @@ import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
 
 import { api } from "~/utils/api";
+import { useState } from "react";
 
 const Home: NextPage = () => {
-  const hello = api.example.hello.useQuery({ text: "from tRPC" });
+  const response = api.example.hello.useMutation();
+  const [input, setInput] = useState("");
 
   return (
     <>
@@ -18,36 +20,31 @@ const Home: NextPage = () => {
       <main className="flex min-h-screen flex-col items-center justify-center bg-[#FFCACA]">
         <div className="flex flex-col items-center justify-center">
           <img src="/totoro.gif" alt="Totoro" className="w-48" />
-          <h1 className="text-[5rem] font-bold text-[#FF00B8]">CuteGPT</h1>
-            <input type="text" className="w-96 h-12 rounded-lg border-2 border-[#FF00B8] text-[#FF00B8] text-2xl font-bold px-4" placeholder="Type your message here" />
-          </div>
+
+          {response.data ? (
+            <p className="text-2xl font-bold text-[#FF00B8]">{response.data.response}</p>
+          ) : (
+            <>
+              <h1 className="text-[5rem] font-bold text-[#FF00B8]">CuteGPT</h1>
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                response.mutate({text: input});
+                setInput("");
+              }}>
+                <input
+                  type="text"
+                  className="h-12 w-96 rounded-lg border-2 border-[#FF00B8] px-4 text-2xl font-bold text-[#FF00B8]"
+                  placeholder="Type your message here"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                />
+              </form>
+            </>
+          )}
+        </div>
       </main>
     </>
   );
 };
 
 export default Home;
-
-const AuthShowcase: React.FC = () => {
-  const { data: sessionData } = useSession();
-
-  const { data: secretMessage } = api.example.getSecretMessage.useQuery(
-    undefined, // no input
-    { enabled: sessionData?.user !== undefined },
-  );
-
-  return (
-    <div className="flex flex-col items-center justify-center gap-4">
-      <p className="text-center text-2xl text-white">
-        {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
-        {secretMessage && <span> - {secretMessage}</span>}
-      </p>
-      <button
-        className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
-        onClick={sessionData ? () => void signOut() : () => void signIn()}
-      >
-        {sessionData ? "Sign out" : "Sign in"}
-      </button>
-    </div>
-  );
-};
