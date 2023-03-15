@@ -13,7 +13,7 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>CuteGPT</title>
+        <title>CuteGPT :3</title>
         <meta name="description" content="Cute version of ChatGPT" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
