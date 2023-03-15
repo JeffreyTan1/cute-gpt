@@ -19,8 +19,8 @@ const Home: NextPage = () => {
         <div className="flex flex-col items-center justify-center">
           <img src="/totoro.gif" alt="Totoro" className="w-48" />
           <h1 className="text-[5rem] font-bold text-[#FF00B8]">CuteGPT</h1>
-          <input type="text" className="w-96 h-12 rounded-lg border-2 border-[#FF00B8] text-[#FF00B8] text-2xl font-bold px-4" placeholder="Type your message here" />
-        </div>
+            <input type="text" className="w-96 h-12 rounded-lg border-2 border-[#FF00B8] text-[#FF00B8] text-2xl font-bold px-4" placeholder="Type your message here" />
+          </div>
       </main>
     </>
   );
